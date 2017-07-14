@@ -1,14 +1,18 @@
 package com.example.alpay.learnwithdrawing;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import java.io.OutputStream;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Context context = getApplicationContext();
         switch(item.getItemId()) {
             case R.id.normal:
                 paintView.normal();
@@ -46,7 +51,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.blur:
                 paintView.blur();
                 return true;
+            case R.id.blue:
+                paintView.changeColorToBlue();
+                return true;
+            case R.id.red:
+                paintView.changeColorToRed();
+                return true;
             case R.id.clear:
+                new GetJsonTask().execute();
                 paintView.clear();
                 return true;
             case R.id.save:
@@ -56,4 +68,22 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class GetJsonTask extends AsyncTask<Void, Void, Void> {
+
+        String[] imageLinks = {" "," "," "," "};
+        public Void doInBackground(Void... voids)
+        {
+            try {
+                imageLinks = GetGoogleImagesResult.getFourImageLinks();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
+
 }
