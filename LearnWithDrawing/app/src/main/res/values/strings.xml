@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">LearnWithDrawing</string>
+    <string-array name="options_array">
+        <item>"blur"</item>
+        <item>"emboss"</item>
+        <item>"clear"</item>
+        <item>"red"</item>
+        <item>"blue"</item>
+    </string-array>
+    <string name="drawer_open">Draw Settings</string>
+    <string name="drawer_close">Paint</string>
+    <string name="title_activity_imege_result">ImegeResultActivity</string>
+</resources>
