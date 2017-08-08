@@ -1,0 +1,2 @@
+model_checkpoint_path: "quickdraw_banana_drawmodel.ckpt"
+all_model_checkpoint_paths: "quickdraw_banana_drawmodel.ckpt"

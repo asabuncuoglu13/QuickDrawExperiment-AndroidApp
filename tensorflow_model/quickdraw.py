@@ -301,8 +301,6 @@ def quickdraw(draw_obj, train_iters, verbose=True):
         print("Outputs saved in file: %s" % out_file)
 
     ckpt_file=os.path.join(output_dir, 'quickdraw_%s_drawmodel.ckpt' % (draw_obj,))
-    saver.save(sess, save_path = "./tmp/my-model/banana.ckpt")
-    saver.restore(sess, "./tmp/my-model/banana.ckpt")
     # ckpt_file = output_dir
     if verbose:
         print("Model saved in file: %s" % saver.save(sess,ckpt_file))
