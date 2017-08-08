@@ -3,6 +3,7 @@ package com.example.alpay.learnwithdrawing;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
@@ -52,6 +53,32 @@ public class File_Ops {
 
             pv.setDrawingCacheEnabled(false);
         }
+    }
+
+    protected static Bitmap scaleBitmap(PaintView pv, float newWidth, float newHeight)
+    {
+        Bitmap bm = pv.getDrawingCache();
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
+    protected static int[] BitmapToPixelArray(Bitmap bp)
+    {
+        int[] pixels = new int[bp.getHeight() * bp.getWidth()];
+        bp.getPixels(pixels, 0, bp.getWidth(), 0, 0, bp.getWidth(), bp.getHeight());
+        return pixels;
     }
 
 }

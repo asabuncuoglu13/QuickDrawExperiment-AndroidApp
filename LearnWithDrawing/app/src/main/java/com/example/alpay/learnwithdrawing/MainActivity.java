@@ -1,7 +1,9 @@
 package com.example.alpay.learnwithdrawing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -9,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,34 +20,52 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private PaintView paintView;
+    private TextView text;
     Context context;
     private String[] mOptions;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private Menu mOptionsMenu;
+    int wantedNumber ;
+    int detectedNumber;
+    String[] imageLinks = {" "," "," "," "};
+    Bitmap[] imageBitmaps = new Bitmap[4];
+
+    private DigitDetector mDetector = new DigitDetector();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        System.loadLibrary("tensorflow_mnist");
+
+        wantedNumber = getRandomNumber(0,9);
+
         context = getApplicationContext();
         mOptions = getResources().getStringArray(R.array.options_array);
+
+        findViewById(R.id.send).setOnClickListener(this);
         /*for(String e: mOptions)
         {
             Log.d("Array:", e.toString());
         }*/
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        text = (TextView) findViewById(R.id.begin_text);
+        text.setText("Draw: "+Integer.toString(wantedNumber));
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
@@ -139,6 +160,12 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    private int getRandomNumber(int min,int max) {
+        return (new Random()).nextInt((max - min) + 1) + min;
+    }
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Context context = getApplicationContext();
@@ -155,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class GetJsonTask extends AsyncTask<String, String, String> {
-
-        String[] imageLinks = {" "," "," "," "};
         public String doInBackground(String... searchterm)
         {
             try {
@@ -167,6 +192,68 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+
+    }
+
+    private class GetBitmapTask extends AsyncTask<String, String, String> {
+        public String doInBackground(String... searchterm)
+        {
+            try {
+                imageBitmaps = GetGoogleImagesResult.getFourImages(searchterm[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
+
+    public boolean detectDigit(PaintView pv, int wantedNumber)
+    {
+        Bitmap bm = File_Ops.scaleBitmap(pv, 28, 28);
+        int[] pixels = File_Ops.BitmapToPixelArray(bm);
+        detectedNumber = mDetector.detectDigit(pixels);
+        if(wantedNumber == detectedNumber)
+            return true;
+        else
+            return false;
+    }
+
+    public void sendFalseIntent(String[] imageLinks)
+    {
+        Intent intent = new Intent(MainActivity.this, WrongAnswerActivity.class);
+        intent.putExtra("object", Integer.toString(wantedNumber));
+        startActivity(intent);
+    }
+
+    public void sendTrueIntent()
+    {
+        Intent intent = new Intent(MainActivity.this, TrueAnswerActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClick(View v)
+    {
+        int i = v.getId();
+        if (i == R.id.send)
+        {
+            Boolean detectedTrue = false;
+            try{
+                detectedTrue = detectDigit(paintView, wantedNumber);
+            }catch (java.lang.UnsatisfiedLinkError u)
+            {
+                Log.d("Detection:", "UnsatisfiedLinkError");
+            }
+            if(!detectedTrue)
+                sendFalseIntent(imageLinks);
+            else
+                sendTrueIntent();
+        }else
+        {
+            Toast.makeText(this, "Not a valid button", Toast.LENGTH_SHORT).show();
         }
 
     }
