@@ -22,8 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
 
@@ -50,6 +49,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.sign_anonymus).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+
+        Intent serviceIntent = new Intent(this, NotificationListenerService.class);
+        startService(serviceIntent);
 
     }
 
@@ -105,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
 
                         if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Auth Failed",
+                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -153,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void addNewUser(String email, String name, String surname, int point) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
-        String full_name = name + " " + surname;
+        String full_name = name + "-" + surname;
         User user = new User(email, full_name, point);
         myRef.child(user.getFull_name()).setValue(user);
     }
@@ -161,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public User returnLocalUser(User user, int point)
     {
         String user_id = mEmailField.getText().toString();
-        String full_name = mNameField.getText().toString()+" "+mSurnameField.getText().toString();
+        String full_name = mNameField.getText().toString()+"-"+mSurnameField.getText().toString();
         user.setFull_name(full_name);
         user.setUser_id(user_id);
         user.setPoint(point);
@@ -188,9 +190,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void sendIntent(String name) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("name", name);
         startActivity(intent);
     }
 
 }
+

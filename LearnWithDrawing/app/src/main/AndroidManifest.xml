@@ -30,7 +30,6 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".WrongAnswerActivity" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".UserDetailActivity" />
         <activity android:name=".TrueAnswerActivity"></activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".FriendsActivity">

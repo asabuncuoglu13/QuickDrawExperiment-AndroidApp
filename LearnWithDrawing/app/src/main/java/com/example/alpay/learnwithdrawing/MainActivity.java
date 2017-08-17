@@ -54,16 +54,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         System.loadLibrary("tensorflow_mnist");
 
         wantedNumber = getRandomNumber(0,9);
+        int screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
 
         context = getApplicationContext();
         mOptions = getResources().getStringArray(R.array.options_array);
 
         ListView listOfMessages = (ListView)findViewById(R.id.main_menu_list);
-        mDrawerOptions = getResources().getStringArray(R.array.drawer_options);
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDrawerOptions);
-        listOfMessages.setAdapter(itemsAdapter);
-
+        if(listOfMessages != null)
+        {
+            mDrawerOptions = getResources().getStringArray(R.array.drawer_options);
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDrawerOptions);
+            listOfMessages.setAdapter(itemsAdapter);
+        }
         findViewById(R.id.send).setOnClickListener(this);
+
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         text = (TextView) findViewById(R.id.begin_text);

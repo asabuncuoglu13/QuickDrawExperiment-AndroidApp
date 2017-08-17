@@ -46,7 +46,8 @@ public class NotificationListenerService extends Service {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ChatMessage post = dataSnapshot.getValue(ChatMessage.class);
-                        message = post.getMessageText();
+                        if(post != null)
+                            message = post.getMessageText();
                     }
 
                     @Override

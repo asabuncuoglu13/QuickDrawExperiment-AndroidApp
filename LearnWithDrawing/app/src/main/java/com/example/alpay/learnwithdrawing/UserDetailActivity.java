@@ -14,10 +14,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class UserDetailActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mUserNameText;

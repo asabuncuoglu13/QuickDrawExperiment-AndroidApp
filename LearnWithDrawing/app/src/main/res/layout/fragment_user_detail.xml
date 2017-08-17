@@ -1,33 +1,51 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.alpay.learnwithdrawing.UserDetailFragment">
+    android:id="@+id/user_detail"
+    android:layout_width="368dp"
+    android:layout_height="495dp"
+    android:columnCount="2"
+    tools:layout_editor_absoluteX="8dp"
+    tools:layout_editor_absoluteY="8dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <GridLayout
-        android:id="@+id/user_detail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnCount="2">
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_gravity="center_horizontal"
+        android:height="32dp"
+        android:text="User name goes here" />
 
-        <TextView
-            android:id="@+id/user_name"
-            android:text = "User name goes here"
-            android:height="32dp"
-            android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/user_point"
+        android:layout_gravity="center_horizontal"
+        android:height="32dp"
+        android:text="Point goes here" />
 
-        <TextView
-            android:id="@+id/user_point"
-            android:text = "Point goes here"
-            android:height="32dp"
-            android:layout_gravity="center_horizontal"/>
+    <Button
+        android:id="@+id/send_game_request_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_columnSpan="2"
+        android:text="GAME REQUEST" />
 
-        <Button
-            android:id="@+id/send_game_request_button"
-            android:layout_columnSpan="2"
-            android:text="GAME REQUEST"
-            android:layout_gravity="center_horizontal"/>
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="427dp" />
 
-    </GridLayout>
-</FrameLayout>
+    <Button
+        android:id="@+id/send_button"
+        android:layout_gravity="center_horizontal"
+        android:text="SEND" />
+
+    <ListView
+        android:id="@+id/list_of_messages"
+        android:layout_width="352dp"
+        android:layout_height="240dp"
+        android:layout_columnSpan="2"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="16dp" />
+
+</GridLayout>
