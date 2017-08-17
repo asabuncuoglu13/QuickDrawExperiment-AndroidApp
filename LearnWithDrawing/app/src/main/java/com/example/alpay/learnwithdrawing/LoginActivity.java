@@ -1,12 +1,16 @@
 package com.example.alpay.learnwithdrawing;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,20 +22,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
 
-
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
 
     private EditText mEmailField;
     private EditText mPasswordField;
-    private  EditText anonymus_name_field;
+    private EditText anonymus_name_field;
+    private EditText mNameField;
+    private EditText mSurnameField;
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,18 +50,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.sign_anonymus).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
+
     }
 
-    /*@Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null)
-            sendIntent();
-    }*/
-    private String db_name =  null;
+
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
@@ -74,8 +68,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            db_name = "user";
-                            sendIntent(db_name);
+                            User.user = returnLocalUser(User.user, 0);
+                            sendIntent(user.getEmail().toString());
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -85,11 +79,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 });
-
-        DatabaseReference ref = database.getReference("users");
-        Map<String, User> users = new HashMap<String, User>();
-        users.put(db_name, new User(db_name, 0));
-        ref.setValue("hello");
     }
 
     private void signIn(String email, String password) {
@@ -106,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            User.user = returnLocalUser(User.user, 0);
                             sendIntent(user.getEmail().toString());
                         } else {
                             // If sign in fails, display a message to the user.
@@ -115,13 +105,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
 
                         if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Authentication is failed",
+                            Toast.makeText(LoginActivity.this, "Auth Failed",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-
 
     private boolean validateForm() {
         boolean valid = true;
@@ -141,11 +130,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
             mPasswordField.setError(null);
         }
+        if (checkNameSurname(R.id.name, R.id.surname))
+            valid = true;
+        else
+            valid = false;
 
         return valid;
     }
 
-    public void beginAnonymus(String name){
+    public boolean checkNameSurname(int name_button_id, int surname_button_id) {
+
+        mNameField = (EditText) findViewById(name_button_id);
+        mSurnameField = (EditText) findViewById(surname_button_id);
+        if (mNameField.getText().toString().trim().equals("") || mSurnameField.getText().toString().trim().equals("")) {
+            Toast.makeText(this, "Name/Surname Field cannot be Empty", Toast.LENGTH_LONG);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void addNewUser(String email, String name, String surname, int point) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        String full_name = name + " " + surname;
+        User user = new User(email, full_name, point);
+        myRef.child(user.getFull_name()).setValue(user);
+    }
+
+    public User returnLocalUser(User user, int point)
+    {
+        String user_id = mEmailField.getText().toString();
+        String full_name = mNameField.getText().toString()+" "+mSurnameField.getText().toString();
+        user.setFull_name(full_name);
+        user.setUser_id(user_id);
+        user.setPoint(point);
+        return user;
+    }
+
+    public void beginAnonymus(String name) {
         sendIntent(name);
     }
 
@@ -155,16 +178,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int i = v.getId();
         if (i == R.id.sign_up) {
             createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+            addNewUser(mEmailField.getText().toString(), mNameField.getText().toString(), mSurnameField.getText().toString(), 0);
         } else if (i == R.id.sign_in) {
             signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if (i == R.id.sign_anonymus) {
             beginAnonymus(anonymus_name_field.getText().toString());
         }
+
     }
 
-    public void sendIntent(String name)
-    {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+    public void sendIntent(String name) {
+        Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("name", name);
         startActivity(intent);
     }

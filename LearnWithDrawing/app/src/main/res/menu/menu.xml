@@ -4,6 +4,9 @@
         android:id="@+id/settings"
         android:title="Settings"></item>
     <item
+        android:id="@+id/chat"
+        android:title="Play Together"></item>
+    <item
         android:id="@+id/save"
         android:title="Save"></item>
 </menu>

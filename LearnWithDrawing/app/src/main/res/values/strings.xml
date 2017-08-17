@@ -7,6 +7,11 @@
         <item>"red"</item>
         <item>"blue"</item>
     </string-array>
+    <string-array name="drawer_options">
+        <item>"Play"</item>
+        <item>"Friends"</item>
+        <item>"Chat"</item>
+    </string-array>
     <string name="drawer_open">Draw Settings</string>
     <string name="drawer_close">Paint</string>
     <string name="title_activity_imege_result">ImegeResultActivity</string>

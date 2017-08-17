@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView text;
     Context context;
     private String[] mOptions;
+    private String[] mDrawerOptions;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -57,11 +58,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         context = getApplicationContext();
         mOptions = getResources().getStringArray(R.array.options_array);
 
+        ListView listOfMessages = (ListView)findViewById(R.id.main_menu_list);
+        mDrawerOptions = getResources().getStringArray(R.array.drawer_options);
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mDrawerOptions);
+        listOfMessages.setAdapter(itemsAdapter);
+
         findViewById(R.id.send).setOnClickListener(this);
-        /*for(String e: mOptions)
-        {
-            Log.d("Array:", e.toString());
-        }*/
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         text = (TextView) findViewById(R.id.begin_text);
@@ -172,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(item.getItemId()) {
             case R.id.settings:
                 mDrawerLayout.openDrawer(Gravity.LEFT);
+                return true;
+            case R.id.chat:
+                Intent intent = new Intent(this, ChatActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.save:
                 File_Ops.saveImage(paintView, context);

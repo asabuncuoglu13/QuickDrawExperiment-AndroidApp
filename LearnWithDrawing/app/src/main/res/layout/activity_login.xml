@@ -8,10 +8,11 @@
     android:weightSum="2">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -28,7 +29,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="e-mail"
+                android:hint="email"
                 android:inputType="textEmailAddress" />
 
             <EditText
@@ -38,6 +39,32 @@
                 android:layout_weight="1"
                 android:hint="password"
                 android:inputType="textPassword" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fullname_field"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Name"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/surname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Surname"
+                android:inputType="text" />
         </LinearLayout>
 
         <LinearLayout
@@ -55,14 +82,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="sign in" />
+                android:text="@string/sign_in" />
 
             <Button
                 android:id="@+id/sign_up"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="create account" />
+                android:text="SIGN UP" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,41 +112,34 @@
 
         </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/anonymus_field"
-                android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/anonymus_field"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/anonymus_text"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+
+            <EditText
+                android:id="@+id/anonymus_name_field"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/anonymus_text"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:layout_weight="2"
+                android:hint="nickname"
+                android:inputType="text" />
 
-
-                <EditText
-                    android:id="@+id/anonymus_name_field"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:hint="nickname"
-                    android:inputType="text" />
-
-                <Button
-                    android:id="@+id/sign_anonymus"
-                    android:layout_width="5dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="GO" />
+            <Button
+                android:id="@+id/sign_anonymus"
+                android:layout_width="5dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GO" />
 
 
         </LinearLayout>
 
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:srcCompat="@mipmap/quickdraw_logo" />
+    </LinearLayout>
 
 </LinearLayout>
