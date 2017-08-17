@@ -50,9 +50,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         mAuth = FirebaseAuth.getInstance();
 
-        Intent serviceIntent = new Intent(this, NotificationListenerService.class);
-        startService(serviceIntent);
-
     }
 
 

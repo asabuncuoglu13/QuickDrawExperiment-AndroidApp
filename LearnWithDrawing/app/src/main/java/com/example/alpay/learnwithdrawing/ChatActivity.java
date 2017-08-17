@@ -19,6 +19,9 @@ public class ChatActivity extends FragmentActivity implements UserListFragment.U
         if(bundle != null)
              mUserName = bundle.getString("userName");
 
+        Intent serviceIntent = new Intent(this, NotificationListenerService.class);
+        startService(serviceIntent);
+
         setContentView(R.layout.activity_chat);
     }
 

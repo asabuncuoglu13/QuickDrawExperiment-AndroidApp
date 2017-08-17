@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,9 +27,10 @@ public class NotificationListenerService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private DatabaseReference mFirebaseRef;
     private Notification notification;
+    private String myUserName;
     String message;
+    String user;
 
     public void listenForNotifications()
     {
@@ -36,18 +38,75 @@ public class NotificationListenerService extends Service {
 
         Intent notificationIntent = new Intent(this, LoginActivity.class);
 
+        myUserName = User.user.full_name;
+
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(LoginActivity.class);
         stackBuilder.addNextIntent(notificationIntent);
         final PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mFirebaseRef.addValueEventListener(
-                new ValueEventListener() {
+        mFirebaseRef.addChildEventListener(
+                new ChildEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                        Log.d("Notification:", "onChildAdded: "+myUserName);
                         ChatMessage post = dataSnapshot.getValue(ChatMessage.class);
                         if(post != null)
+                        {
                             message = post.getMessageText();
+                            user = post.getMessageUser();
+                            Log.d("Notification:", "onChildChanged: username is "+user+" message is: "+message);
+                        }
+
+                        if (message != null && user != null)
+                        {
+                            notification = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle("New mail from " + user)
+                                    .setContentText(message)
+                                    .setSmallIcon(R.mipmap.ic_new_mail)
+                                    .setContentIntent(pendingIntent)
+                                    .build();
+
+                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, notification);
+                        }
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot)
+                    {
+                        Log.d("Notification:", "onChildRemoved");
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName)
+                    {
+                        Log.d("Notification:", "onChildChanged");
+                        ChatMessage post = dataSnapshot.getValue(ChatMessage.class);
+                        if(post != null)
+                        {
+                            message = post.getMessageText();
+                            user = post.getMessageUser();
+                            Log.d("Notification:", "onChildChanged: username is "+user+" message is: "+message);
+                        }
+
+                        if (message != null && user != null)
+                        {
+                            notification = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle("New mail from " + user)
+                                    .setContentText(message)
+                                    .setSmallIcon(R.mipmap.ic_new_mail)
+                                    .setContentIntent(pendingIntent)
+                                    .build();
+
+                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1, notification);
+                        }
+                    }
+                    @Override
+                    public void onChildMoved(DataSnapshot snapshot, String previousChildName)
+                    {
+                        Log.d("Notification:", "onChildMoved");
                     }
 
                     @Override
@@ -56,17 +115,6 @@ public class NotificationListenerService extends Service {
                         Log.d("Notification:", "onCancelled: Database error");
                     }
                 });
-
-        notification = new Notification.Builder(this)
-                .setContentTitle("New mail from " + message)
-                .setContentText(message)
-                .setSmallIcon(R.mipmap.ic_new_mail)
-                .setContentIntent(pendingIntent)
-                .build();
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
-
     }
 
     @Override

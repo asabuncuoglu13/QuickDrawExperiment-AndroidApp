@@ -18,7 +18,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
 
     private TextView mUserNameText;
     private TextView mPointText;
-    private String mUserName;
+    public static String mUserName;
     private int mUserPoint;
     private String myUserName;
     private FirebaseListAdapter<ChatMessage> adapter;
@@ -33,6 +33,7 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
         if(bundle != null)
         {
             mUserName = bundle.getString("userName");
+            mUserName = mUserName.replaceAll(" ", "-");
             mUserPoint = bundle.getInt("userPoint");
         }
 
@@ -95,9 +96,10 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     public static void sendNotificationToUser(String user, final String message) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("notificationRequests");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("notificationRequests");
         ChatMessage cm = new ChatMessage(message, user);
-        ref.push().setValue(cm);
+        myRef.child(mUserName).setValue(cm);
     }
 
     public void onClick(View v) {
@@ -108,7 +110,10 @@ public class UserDetailActivity extends BaseActivity implements View.OnClickList
             displayChatMessages();
         }else if (i == R.id.send_game_request_button)
         {
-            sendNotificationToUser(myUserName, "Play a game?");
+            if(myUserName != null)
+                sendNotificationToUser(myUserName, "Play a game?");
+            else
+                Toast.makeText(this, "You are not logged in!", Toast.LENGTH_SHORT);
         }else
         {
             Toast.makeText(this, "Invalid button selection.", Toast.LENGTH_SHORT);

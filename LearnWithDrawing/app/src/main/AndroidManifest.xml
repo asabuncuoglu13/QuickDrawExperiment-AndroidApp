@@ -32,6 +32,7 @@
         <activity android:name=".ChatActivity" />
         <activity android:name=".TrueAnswerActivity"></activity>
         <activity android:name=".BaseActivity" />
+        <activity android:name=".UserDetailActivity"></activity>
         <activity android:name=".FriendsActivity">
             <meta-data
                 android:name="android.app.default_searchable"
