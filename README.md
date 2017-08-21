@@ -1,5 +1,7 @@
 ### QuickDraw Experiment Android
 
+// Not Completed Yet
+
 Alpay Sabuncuoğlu
 Ali Ozkaya
 
